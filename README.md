@@ -24,7 +24,7 @@ cd nodejs-ssl-server
 git checkout nodejs-docker-aws-ecs
 ```
 
-### Step 2 - Build and run docker container
+### Step 2 - Build docker image  and run docker container
 
 ```
 docker build -t nodejs-server-demo .
@@ -34,7 +34,7 @@ docker build -t nodejs-server-demo .
 docker run -dp 3000:3000 nodejs-server-demo
 ```
   
-## Support 🙏😃
+## Support 🙏😃 
   
  If you Like the tutorial and you want to support my channel so I will keep releasing amazing content that will turn you to a desirable Developer with Amazing Cloud skills... I will realy appricite if you:
  
