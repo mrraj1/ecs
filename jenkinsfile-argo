@@ -102,7 +102,7 @@ pipeline {
                                     git commit -m "Update deployment image to ${IMAGE_URI}:${BUILD_NUMBER}"
                                     
                                     # Set remote with credentials and push
-                                    git remote set-url origin https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/jnbhol101/netflix.git
+                                    git remote set-url origin https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/mrraj1/ecs.git
                                     git push origin main
                                 fi
                             """
