@@ -39,7 +39,7 @@ pipeline {
                     sh """
                     argocd app create app-1 \\
                         --repo https://github.com/mrraj1/ecs.git \\
-                        --revision master \\
+                        --revision main \\
                         --path Kubernetes \\
                         --dest-server https://kubernetes.default.svc \\
                         --dest-namespace default \\
