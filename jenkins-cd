@@ -37,7 +37,7 @@ pipeline {
 
                     // Create the ArgoCD application
                     sh """
-                    argocd app create example-application \\
+                    argocd app create app-1 \\
                         --repo https://github.com/mrraj1/ecs.git \\
                         --revision master \\
                         --path Kubernetes \\
@@ -47,7 +47,7 @@ pipeline {
                         --self-heal || true
                     """
                     // Sync the application if it's out of sync
-                    sh "argocd app sync example-application"
+                    sh "argocd app sync app-1"
                 }
             }
         }
@@ -57,7 +57,7 @@ pipeline {
                 script {
                     // Sync the application (trigger a sync to Kubernetes)
                     sh """
-                    argocd app sync example-application
+                    argocd app sync app-1
                     """
                 }
             }
