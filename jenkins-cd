@@ -1,0 +1,80 @@
+pipeline {
+    agent any
+
+    environment {
+        ARGOCD_CLI_PATH = '/usr/local/bin/argocd'  // Path where argocd CLI will be installed (if necessary)
+        ARGOCD_SERVER = 'aa76e1ab0a1f447a98c6db0bd9b6d1ad-142336030.us-west-2.elb.amazonaws.com'  // Replace with your ArgoCD server URL
+        ARGOCD_USERNAME = 'admin'  // ArgoCD username
+        ARGOCD_PASSWORD = 'F7zN8YRoQmQrNXwj'  // ArgoCD password, ideally you should use Jenkins credentials
+    }
+
+    stages {
+        stage('Install ArgoCD CLI') {
+            steps {
+                script {
+                    // Ensure ArgoCD CLI is installed
+                    sh """
+                    if ! command -v argocd &> /dev/null; then
+                        echo "ArgoCD CLI not found. Installing..."
+                        curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+                        chmod +x argocd-linux-amd64
+                        sudo mv argocd-linux-amd64 /usr/local/bin/argocd
+                    else
+                        echo "ArgoCD CLI is already installed."
+                    fi
+                    """
+                }
+            }
+        }
+
+        stage('Create ArgoCD Application') {
+            steps {
+                script {
+                    // Log in to ArgoCD
+                    sh """
+                    argocd login ${ARGOCD_SERVER} --username ${ARGOCD_USERNAME} --password ${ARGOCD_PASSWORD} --insecure
+                    """
+
+                    // Create the ArgoCD application
+                    sh """
+                    argocd app create example-application \\
+                        --repo https://github.com/mrraj1/ecs.git \\
+                        --revision master \\
+                        --path Kubernetes \\
+                        --dest-server https://kubernetes.default.svc \\
+                        --dest-namespace default \\
+                        --sync-policy automated \\
+                        --self-heal || true
+                    """
+                    // Sync the application if it's out of sync
+                    sh "argocd app sync example-application"
+                }
+            }
+        }
+
+        stage('Sync ArgoCD Application') {
+            steps {
+                script {
+                    // Sync the application (trigger a sync to Kubernetes)
+                    sh """
+                    argocd app sync example-application
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+
+        success {
+            echo 'ArgoCD application creation and sync completed successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed. Please check the logs for details.'
+        }
+    }
+}
