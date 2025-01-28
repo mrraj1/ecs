@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: crush-container
-          image: 940482452163.dkr.ecr.us-west-2.amazonaws.com/poc-dev-cluster-repo-2:5
+          image: 940482452163.dkr.ecr.us-west-2.amazonaws.com/poc-dev-cluster-repo-2:6
           ports:
             - containerPort: 80
       imagePullSecrets:
